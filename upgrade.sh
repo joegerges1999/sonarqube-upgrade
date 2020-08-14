@@ -5,6 +5,7 @@ UPGRADE_VERSION=$2
 APP=$3
 CLUSTER_ID=$4 #c-jpxcn
 PROJECT_ID=$5 #p-zwxgj
+TOKEN=$6
 
 if [[ -z $TEAM || -z $UPGRADE_VERSION || -z $APP || -z $CLUSTER_ID || -z $PROJECT_ID ]]; then
   echo 'One or more variables are undefined, exiting script ...'
@@ -27,7 +28,7 @@ fi
 echo "All metadata fetched successfully, starting the upgrade process..."
 
 echo "Logging in to rancher ..."
-rancher login https://rancher.cd.murex.com/ --token token-vkq9d:wg8gtt4gbgtk7nzfhlj4gs87dn4w2hxhd9qmcb9fmnqkllgx57792r --context $CLUSTER_ID:$PROJECT_ID
+rancher login https://rancher.cd.murex.com/ --token $TOKEN --context $CLUSTER_ID:$PROJECT_ID
 APP_VERSION=$(rancher app | grep $TEAM-$APP | awk '{print $6}')
 echo "Successfully logged in to rancher"
 
