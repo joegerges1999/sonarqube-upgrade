@@ -37,9 +37,9 @@ echo "Waiting for 5 seconds..."
 sleep 5s
 
 echo "Deploying the upgrade ..."
-rancher app upgrade $TEAM-$APP $APP_VERSION --set ingress.enabled='true' --set $APP.image.tag="$UPGRADE_VERSION-community" --set hostname="$HOSTNAME" --set team="$TEAM"
+rancher app upgrade $TEAM-$APP $APP_VERSION --set ingress.enabled='true' --set $APP.image.tag="$UPGRADE_VERSION" --set hostname="$HOSTNAME" --set team="$TEAM"
 
 echo "Initiating playbook ..."
 ansible-playbook /data/$TEAM/$APP/upgrade/upgrade.yaml --extra-vars "web_context=$WEBCONTEXT hostname=$HOSTNAME"
 
-echo "SonarQube successfully upgrade it to $UPGRADE_VERSION-community, you can access the app via http://$HOSTNAME$WEBCONTEXT/new"
+echo "SonarQube successfully upgrade it to $UPGRADE_VERSION, you can access the app via http://$HOSTNAME$WEBCONTEXT/new"
