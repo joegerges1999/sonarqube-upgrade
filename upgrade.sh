@@ -31,7 +31,7 @@ echo "Removing ingress ..."
 rancher app upgrade $TEAM-$APP $APP_VERSION --set ingress.enabled='false' --set $APP.image.tag="$CURRENT_VERSION" --set hostname="$HOSTNAME" --set team="$TEAM"
 
 echo "Backing up database ..."
-kubectl -n $APP exec $POD -c sonardb -- bash -c "pg_dump -U sonar sonar > /var/lib/postgresql/data/sonar-backup.sql"
+kubectl -n $APP exec $POD -c sonardb -- bash -c "pg_dump -U sonar sonar > /var/lib/postgresql/backups/db_dump-$CURRENT_VERSION.sql"
 
 echo "Waiting for 5 seconds..."
 sleep 5s
