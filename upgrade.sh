@@ -11,7 +11,7 @@ if [[ -z $TEAM || -z $UPGRADE_VERSION || -z $APP ]]; then
   exit 1
 fi
 
-echo "Fetching metadata ..."
+echo "Fetching required metadata ..."
 HOSTNAME=$(kubectl get --all-namespaces ingress -l app=$APP,team=$TEAM -o jsonpath="{.items[0].spec.rules[0].host}")
 WEBCONTEXT=$(kubectl get --all-namespaces ingress -l app=$APP,team=$TEAM -o jsonpath="{.items[0].spec.rules[0].http.paths[0].path}")
 POD=$(kubectl get pod --all-namespaces -l app=$APP,team=$TEAM -o jsonpath="{.items[0].metadata.name}")
@@ -24,15 +24,20 @@ if [[ -z $HOSTNAME || -z $WEBCONTEXT || -z $POD || -z $CURRENT_VERSION || -z $CU
   exit 1
 fi
 
+echo "All metadata fetched successfully, starting the upgrade process..."
+
 echo "Logging in to rancher ..."
 rancher login https://rancher.cd.murex.com/ --token token-vkq9d:wg8gtt4gbgtk7nzfhlj4gs87dn4w2hxhd9qmcb9fmnqkllgx57792r --context $CLUSTER_ID:$PROJECT_ID
 APP_VERSION=$(rancher app | grep $TEAM-$APP | awk '{print $6}')
+echo "Successfully logged in to rancher"
 
 echo "Removing ingress ..."
 rancher app upgrade $TEAM-$APP $APP_VERSION --set ingress.enabled='false' --set $APP.image.tag="$CURRENT_VERSION" --set hostname="$HOSTNAME" --set team="$TEAM"
+echo "Ingress removed"
 
 echo "Backing up database ..."
 kubectl -n $APP exec $POD -c sonardb -- bash -c "pg_dump -U sonar sonar > /var/lib/postgresql/backups/db_dump-$CURRENT_VERSION_NUMBER.sql"
+echo "Dump db_dump-$CURRENT_VERSION_NUMBER.sql created, you can find it in /var/lib/postgresql/backups"
 
 echo "Waiting for 5 seconds..."
 sleep 5s
