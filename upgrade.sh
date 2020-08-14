@@ -17,8 +17,9 @@ WEBCONTEXT=$(kubectl get --all-namespaces ingress -l app=$APP,team=$TEAM -o json
 POD=$(kubectl get pod --all-namespaces -l app=$APP,team=$TEAM -o jsonpath="{.items[0].metadata.name}")
 CURRENT_VERSION=$(kubectl get --all-namespaces deployment -l app=$APP,team=$TEAM -o jsonpath="{.items[0].spec.template.spec.containers[1].image}")
 CURRENT_VERSION=$(cut -d ":" -f2 <<< "$CURRENT_VERSION")
+CURRENT_VERSION_NUMBER=$(echo "$CURRENT_VERSION" | rev | cut -d "-" -f2 | rev)
 
-if [[ -z $HOSTNAME || -z $WEBCONTEXT || -z $POD || -z $CURRENT_VERSION ]]; then
+if [[ -z $HOSTNAME || -z $WEBCONTEXT || -z $POD || -z $CURRENT_VERSION || -z $CURRENT_VERSION_NUMBER ]]; then
   echo 'One or more variables could not be fetched, exiting script ...'
   exit 1
 fi
@@ -31,7 +32,7 @@ echo "Removing ingress ..."
 rancher app upgrade $TEAM-$APP $APP_VERSION --set ingress.enabled='false' --set $APP.image.tag="$CURRENT_VERSION" --set hostname="$HOSTNAME" --set team="$TEAM"
 
 echo "Backing up database ..."
-kubectl -n $APP exec $POD -c sonardb -- bash -c "pg_dump -U sonar sonar > /var/lib/postgresql/backups/db_dump-$CURRENT_VERSION.sql"
+kubectl -n $APP exec $POD -c sonardb -- bash -c "pg_dump -U sonar sonar > /var/lib/postgresql/backups/db_dump-$CURRENT_VERSION_NUMBER.sql"
 
 echo "Waiting for 5 seconds..."
 sleep 5s
