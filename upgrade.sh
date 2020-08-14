@@ -1,10 +1,10 @@
 TEAM=$1
-UPGRADE_TO=$2
+UPGRADE_VERSION=$2
 APP=$3
 CLUSTER_ID=c-jpxcn
 PROJECT_ID=p-zwxgj
 
-if [[ -z $TEAM || -z $UPGRADE_TO || -z $APP ]]; then
+if [[ -z $TEAM || -z $UPGRADE_VERSION || -z $APP ]]; then
   echo 'One or more variables are undefined, exiting script ...'
   exit 1
 fi
@@ -35,7 +35,7 @@ echo "Waiting for 5 seconds..."
 sleep 5s
 
 echo "Deploying the upgrade ..."
-rancher app upgrade $TEAM-$APP $APP_VERSION --set ingress.enabled='true' --set $APP.image.tag="$UPGRADE_TO-community" --set hostname="$HOSTNAME" --set team="$TEAM"
+rancher app upgrade $TEAM-$APP $APP_VERSION --set ingress.enabled='true' --set $APP.image.tag="$UPGRADE_VERSION-community" --set hostname="$HOSTNAME" --set team="$TEAM"
 
 echo "Initiating playbook ..."
 echo "http://$HOSTNAME$WEBCONTEXT/setup"
