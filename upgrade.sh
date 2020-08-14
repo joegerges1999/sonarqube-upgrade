@@ -1,3 +1,5 @@
+#!/bin/sh
+
 TEAM=$1
 UPGRADE_VERSION=$2
 APP=$3
