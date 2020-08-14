@@ -3,10 +3,10 @@
 TEAM=$1
 UPGRADE_VERSION=$2
 APP=$3
-CLUSTER_ID=c-jpxcn
-PROJECT_ID=p-zwxgj
+CLUSTER_ID=$4 #c-jpxcn
+PROJECT_ID=$5 #p-zwxgj
 
-if [[ -z $TEAM || -z $UPGRADE_VERSION || -z $APP ]]; then
+if [[ -z $TEAM || -z $UPGRADE_VERSION || -z $APP || -z $CLUSTER_ID || -z $PROJECT_ID ]]; then
   echo 'One or more variables are undefined, exiting script ...'
   exit 1
 fi
