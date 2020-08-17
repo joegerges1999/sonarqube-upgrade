@@ -38,7 +38,7 @@ rancher app upgrade $TEAM-$APP $APP_VERSION --set ingress.enabled='false' --set 
 echo "Ingress removed"
 
 echo "Backing up database ..."
-kubectl -n $APP exec $POD -c sonardb -- bash -c "pg_dump -U sonar sonar > /var/lib/postgresql/backups/db_dump-$CURRENT_VERSION_NUMBER.sql"
+kubectl -n $APP exec $POD -c sonardb -- bash -c "mkdir -p /var/lib/postgresql/backups && pg_dump -U sonar sonar > /var/lib/postgresql/backups/db_dump-$CURRENT_VERSION_NUMBER.sql"
 echo "Dump db_dump-$CURRENT_VERSION_NUMBER.sql created, you can find it in /var/lib/postgresql/backups"
 
 echo "Waiting for 5 seconds..."
